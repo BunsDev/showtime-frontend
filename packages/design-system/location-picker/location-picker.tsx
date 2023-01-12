@@ -50,7 +50,7 @@ export const LocationPicker = (props: LocationPickerProps) => {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={4}
+      zoom={10}
       options={{
         disableDefaultUI: true,
       }}
