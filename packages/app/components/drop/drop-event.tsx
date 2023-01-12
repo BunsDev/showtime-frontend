@@ -19,6 +19,8 @@ import { DataPill } from "@showtime-xyz/universal.data-pill";
 import { ErrorText, Fieldset } from "@showtime-xyz/universal.fieldset";
 import { useIsDarkMode } from "@showtime-xyz/universal.hooks";
 import { FlipIcon, Image as ImageIcon } from "@showtime-xyz/universal.icon";
+import { Location } from "@showtime-xyz/universal.icon";
+import { Modal } from "@showtime-xyz/universal.modal";
 import { Pressable } from "@showtime-xyz/universal.pressable";
 import { useRouter } from "@showtime-xyz/universal.router";
 import { ScrollView } from "@showtime-xyz/universal.scroll-view";
@@ -52,6 +54,7 @@ import {
 } from "app/utilities";
 
 import { Hidden } from "design-system/hidden";
+import { LocationPicker } from "design-system/location-picker";
 
 const SECONDS_IN_A_DAY = 24 * 60 * 60;
 const SECONDS_IN_A_WEEK = 7 * SECONDS_IN_A_DAY;
@@ -106,6 +109,7 @@ const DROP_FORM_DATA_KEY = "drop_form_local_data_event";
 export const DropEvent = () => {
   const isDark = useIsDarkMode();
   const { rudder } = useRudder();
+  const [showLocationPicker, setShowLocationPicker] = React.useState(false);
 
   const {
     control,
@@ -504,16 +508,22 @@ export const DropEvent = () => {
               name="googleMapsUrl"
               render={({ field: { onChange, onBlur, value } }) => {
                 return (
-                  <Fieldset
+                  <Button
+                    onPress={() => {
+                      setShowLocationPicker(true);
+                    }}
                     tw="flex-1"
-                    label="Location"
-                    onBlur={onBlur}
-                    helperText="The location where people can collect the drop from"
-                    errorText={errors.googleMapsUrl?.message}
-                    value={value?.toString()}
-                    onChangeText={onChange}
-                    placeholder="Enter the Google Maps link of the location"
-                  />
+                  >
+                    <Text tw="font-semibold text-gray-50 dark:text-gray-900">
+                      Pick Location
+                    </Text>
+                    <View tw="ml-2" />
+                    <Location
+                      color={isDark ? "black" : "white"}
+                      height={16}
+                      width={16}
+                    />
+                  </Button>
                 );
               }}
             />
@@ -737,6 +747,50 @@ export const DropEvent = () => {
           <View style={{ height: bottomBarHeight + 60 }} />
         </View>
       </BottomSheetScrollView>
+      {showLocationPicker ? (
+        <PickLocation
+          handleClose={() => setShowLocationPicker(false)}
+          handleSave={(location) => {
+            setValue("location", location);
+          }}
+        />
+      ) : null}
     </BottomSheetModalProvider>
+  );
+};
+
+const PickLocation = ({
+  handleClose,
+  handleSave,
+}: {
+  handleClose: () => void;
+  handleSave: (location: any) => void;
+}) => {
+  const locationRef = useRef<any>();
+  return (
+    <Modal
+      tw="bottom-16 md:bottom-0"
+      onClose={handleClose}
+      title="Pick Location"
+    >
+      <View tw="h-[400px] w-[100%] p-4">
+        <LocationPicker
+          onLocationChange={(location) => {
+            locationRef.current = location;
+          }}
+        />
+        <View tw="pt-4">
+          <Button
+            variant="primary"
+            onPress={() => handleSave(locationRef.current)}
+          >
+            Save
+          </Button>
+          <Button variant="text" onPress={handleClose}>
+            Cancel
+          </Button>
+        </View>
+      </View>
+    </Modal>
   );
 };

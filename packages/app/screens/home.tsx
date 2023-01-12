@@ -1,24 +1,23 @@
-import { View } from "@showtime-xyz/universal.view";
-
+import { ErrorBoundary } from "app/components/error-boundary";
+import { Feed } from "app/components/feed";
+import { Feed as FeedDesktop } from "app/components/feed/feed.md";
 import { withColorScheme } from "app/components/memo-with-theme";
 import { useTrackPageViewed } from "app/lib/analytics";
 
-import { LocationPicker } from "design-system/location-picker";
+import { Hidden } from "design-system/hidden";
 
 const HomeScreen = withColorScheme(() => {
   useTrackPageViewed({ name: "Home" });
 
   return (
-    <View
-      style={{
-        paddingTop: 80,
-        width: "100%",
-        flex: 1,
-        height: "100%",
-      }}
-    >
-      <LocationPicker onLocationChange={(l) => console.log(l)} />
-    </View>
+    <ErrorBoundary>
+      <Hidden from="md">
+        <Feed />
+      </Hidden>
+      <Hidden until="md">
+        <FeedDesktop />
+      </Hidden>
+    </ErrorBoundary>
   );
 });
 
