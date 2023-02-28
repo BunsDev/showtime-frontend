@@ -213,7 +213,7 @@ const CardLargeScreen = ({
             !!nft.creator_airdrop_edition_address &&
             edition ? (
               <View tw="flex-row">
-                <ClaimButton edition={edition} />
+                <ClaimButton edition={edition} nft={nft} />
                 <ClaimedShareButton tw="ml-3" edition={edition} />
               </View>
             ) : null}

@@ -11,6 +11,9 @@ import { Text } from "@showtime-xyz/universal.text";
 import { ClaimContext } from "app/context/claim-context";
 import { CreatorEditionResponse } from "app/hooks/use-creator-collection-detail";
 import { useRedirectToClaimDrop } from "app/hooks/use-redirect-to-claim-drop";
+import { useSpotifyGatedClaim } from "app/hooks/use-spotify-gated-claim";
+import { useUser } from "app/hooks/use-user";
+import { NFT } from "app/types";
 
 import { ThreeDotsAnimation } from "design-system/three-dots";
 
@@ -19,6 +22,7 @@ type ClaimButtonProps = {
   size?: ButtonProps["size"];
   tw?: string;
   style?: StyleProp<ViewStyle>;
+  nft?: NFT;
 };
 
 export enum ClaimStatus {
@@ -47,6 +51,7 @@ export const ClaimButton = ({
   edition,
   size = "small",
   tw = "",
+  nft,
   style,
 }: ClaimButtonProps) => {
   const isDark = useIsDarkMode();
@@ -54,10 +59,23 @@ export const ClaimButton = ({
   const { state: claimStates, dispatch } = useContext(ClaimContext);
   const isProgress =
     claimStates.status === "loading" && claimStates.signaturePrompt === false;
+  const { claimSpotifyGatedDrop } = useSpotifyGatedClaim(
+    edition.creator_airdrop_edition
+  );
+
+  const { isAuthenticated } = useUser();
 
   const onClaimPress = () => {
     dispatch({ type: "initial" });
-    redirectToClaimDrop(edition.creator_airdrop_edition.contract_address);
+    if (
+      (edition.gating_type === "music_presave" ||
+        edition.gating_type === "spotify_save") &&
+      !isAuthenticated
+    ) {
+      claimSpotifyGatedDrop(nft);
+    } else {
+      redirectToClaimDrop(edition.creator_airdrop_edition.contract_address);
+    }
   };
 
   let isExpired = false;

@@ -76,7 +76,7 @@ export const NFTDetails = ({ nft, edition, detail }: NFTDetailsProps) => {
       />
       {isCreatorDrop && edition ? (
         <View tw="flex-row">
-          <ClaimButton tw="flex-1" edition={edition} size="regular" />
+          <ClaimButton tw="flex-1" edition={edition} size="regular" nft={nft} />
           <ClaimedShareButton
             tw="ml-3 w-1/3"
             edition={edition}
