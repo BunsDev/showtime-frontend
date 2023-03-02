@@ -45,6 +45,8 @@ export const useMagicAuthRedirect = () => {
           const result = await magic.oauth.getRedirectResult();
           const idToken = result.magic.idToken;
 
+          console.log("token result ", result);
+
           if (shouldLoginRef.current) {
             const user = await login(LOGIN_MAGIC_ENDPOINT, {
               did: idToken,

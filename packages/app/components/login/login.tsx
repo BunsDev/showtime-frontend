@@ -14,6 +14,7 @@ import { LoginInputField } from "./login-input-field";
 import { LoginOverlays } from "./login-overlays";
 import { LoginWithApple } from "./login-with-apple";
 import { LoginWithGoogle } from "./login-with-google";
+import { LoginWithTwitter } from "./login-with-twitter";
 import { PhoneNumberPicker } from "./phone-number-picker";
 import type { SubmitWalletParams } from "./use-login";
 
@@ -101,7 +102,7 @@ export function LoginComponent({
           </View>
           <LoginWithApple />
           <LoginWithGoogle />
-          {/* <LoginWithTwitter /> */}
+          <LoginWithTwitter />
           <LoginButton onPress={() => setShowEmailLogin(true)} type="email" />
           <ConnectButton handleSubmitWallet={handleSubmitWallet} />
           <LoginFooter tw="mt-4" />
